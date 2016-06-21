@@ -5,3 +5,4 @@ include __DIR__ . '/Lib/Loader.php';
 spl_autoload_register('\Lib\Loader::autoLoad');
 
 \App\SwooleMonitor::start();
+$server = new \Demos\SwooleServerDemo();
