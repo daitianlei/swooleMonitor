@@ -1,0 +1,16 @@
+{
+  "server": "ServerName",
+  "start": {
+  },
+  "stop": {
+  },
+  "status": {
+  },
+  "reload": {
+    "sysSig": "USR1"
+  },
+  "restart": {
+    "sysSig": ""
+  }
+
+}
