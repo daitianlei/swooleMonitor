@@ -1,0 +1,6 @@
+[2016-06-28 17:05:05] Monolog.INFO: Swoole Monitor Starting !   [] []
+[2016-06-28 17:05:05] Monolog.INFO: swoole process wait ret: [array (   'pid' => 9295,   'code' => 0,   'signal' => 0, )] [] []
+[2016-06-28 17:05:32] Monolog.INFO: Swoole Monitor Starting !   [] []
+[2016-06-28 17:05:32] Monolog.INFO: swoole process wait ret: [array (   'pid' => 9309,   'code' => 0,   'signal' => 0, )] [] []
+[2016-06-28 17:06:23] Monolog.INFO: Swoole Monitor Starting !   [] []
+[2016-06-28 17:06:23] Monolog.INFO: swoole process wait ret: [array (   'pid' => 9321,   'code' => 0,   'signal' => 0, )] [] []

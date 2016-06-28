@@ -1,7 +1,6 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: daitianlei
- * Date: 16/6/19
- * Time: 下午9:34
- */
+<?php namespace Config;
+
+class Config
+{
+    const SYSTEM_CONFIG_PATH = BASE_PATH . '/Config';
+}
