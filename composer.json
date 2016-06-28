@@ -1,0 +1,12 @@
+{
+    "name": "daitianlei/swoole-monitor",
+    "require": {
+        "monolog/monolog": "^1.17"
+    },
+    "authors": [
+        {
+            "name": "suraclisp",
+            "email": "dtldyx6@163.com"
+        }
+    ]
+}
