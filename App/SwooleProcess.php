@@ -1,7 +1,6 @@
 <?php namespace App;
 
 use Lib\Log;
-use Monolog\Logger;
 
 class SwooleProcess
 {
@@ -16,7 +15,7 @@ class SwooleProcess
         $this->daemonProcess = new \swoole_process('\App\SwooleMonitor::start', true);
         $this->daemonProcess->start();
         $ret = \swoole_process::wait();
-        Log::write(sprintf('swoole process wait ret: [%s]', var_export($ret, true)), Logger::INFO);
+        Log::write(sprintf('swoole process wait ret: [%s]', var_export($ret, true)), Log::INFO);
         \swoole_process::daemon(true, true);
     }
 }

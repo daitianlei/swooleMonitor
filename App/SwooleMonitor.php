@@ -1,6 +1,5 @@
 <?php namespace App;
 use Lib\Log;
-use Monolog\Logger;
 
 /**
  * Created by PhpStorm.
@@ -16,7 +15,7 @@ class SwooleMonitor
     
     public static function start(\swoole_process $worker)
     {
-        Log::write("Swoole Monitor Starting ! \n", Logger::INFO);
+        Log::write("Swoole Monitor Starting ! \n", Log::INFO);
         $worker->exec('php', '-v');
     }
 }
