@@ -5,4 +5,5 @@ include __DIR__ . '/Lib/Loader.php';
 spl_autoload_register('\Lib\Loader::autoLoad');
 include __DIR__ . '/vendor/autoload.php';
 
-new \App\SwooleProcess();
+\App\SwooleMonitor::start();
+

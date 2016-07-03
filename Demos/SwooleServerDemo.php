@@ -2,24 +2,41 @@
 class SwooleServerDemo
 {
     private $server;
-    public function __construct()
+    private $serverName;
+    public function __construct($serverName)
     {
+        $this->serverName = $serverName;
         $this->server = new \swoole_server("127.0.0.1", 9501);
         $this->server->set(array(
-            'worker_num' => 4,
+            'worker_num' => 2,
             'daemonize' => true,
         ));
         $this->server->on('Start', array($this, 'onStart'));
+        $this->server->on('ManagerStart', array($this, 'onManagerStart'));
         $this->server->on('Connect', array($this, 'onConnect'));
         $this->server->on('Receive', array($this, 'onReceive'));
         $this->server->on('Close', array($this, 'onClose'));
-        
         $this->server->start();
     }
 
     public function onStart(\swoole_server $server)
     {
-        echo "Start\n";
+        swoole_set_process_name( $this->serverName . ' master');
+        file_put_contents('/var/run/swoole_test_master.pid' , $server->master_pid );
+    }
+    public function onManagerStart(\swoole_server $serv)
+    {
+        swoole_set_process_name($this->serverName . ' manager');
+    }
+    public function onWorkStart(\swoole_server $server, $worker_id)
+    {
+        swoole_set_process_name($this->serverName . ' worker');
+        if($worker_id >= $server->setting['worker_num']) {
+            swoole_set_process_name("php  task worker");
+        } else {
+            swoole_set_process_name("php  event worker");
+        }
+
     }
     
     public function onConnect(\swoole_server $server, $fd)

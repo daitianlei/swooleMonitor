@@ -17,10 +17,4 @@ class SwooleTimer
         return static::$swooleTimer;
     }
 
-    /**
-     *
-     */
-    public static function test()
-    {
-    }
 }
