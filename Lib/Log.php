@@ -6,6 +6,9 @@ use Monolog\Handler\StreamHandler;
 
 class Log
 {
+    const DEBUG = Logger::DEBUG;
+    const ERROR = Logger::ERROR;
+    const INFO  = Logger::INFO;
     private $_log;
     private $_logHandler;
     
