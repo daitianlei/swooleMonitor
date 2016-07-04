@@ -1,5 +1,9 @@
 <?php namespace App;
-
+/**
+ * Class SwooleTimer
+ * Note: 暂未使用
+ * @package App
+ */
 class SwooleTimer
 {
     private static $timers;

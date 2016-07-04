@@ -13,6 +13,7 @@ class SwooleServerDemo
         ));
         $this->server->on('Start', array($this, 'onStart'));
         $this->server->on('ManagerStart', array($this, 'onManagerStart'));
+        $this->server->on('WorkerStart', array($this, 'onWorkerStart'));
         $this->server->on('Connect', array($this, 'onConnect'));
         $this->server->on('Receive', array($this, 'onReceive'));
         $this->server->on('Close', array($this, 'onClose'));
@@ -28,15 +29,9 @@ class SwooleServerDemo
     {
         swoole_set_process_name($this->serverName . ' manager');
     }
-    public function onWorkStart(\swoole_server $server, $worker_id)
+    public function onWorkerStart(\swoole_server $server, $worker_id)
     {
         swoole_set_process_name($this->serverName . ' worker');
-        if($worker_id >= $server->setting['worker_num']) {
-            swoole_set_process_name("php  task worker");
-        } else {
-            swoole_set_process_name("php  event worker");
-        }
-
     }
     
     public function onConnect(\swoole_server $server, $fd)

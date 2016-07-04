@@ -75,7 +75,20 @@ class SwooleMonitor
         }
         
         return static::getInstance()->startServer($serverName, $serverConfig);
-         
+    }
+    
+    private function noticeDaemonServer($type, $serverName)
+    {
+        $client = new \swoole_client(SWOOLE_UNIX_STREAM, SWOOLE_SOCK_SYNC);
+        $client->connect(Config::GOD_DAEMON_SOCK_PATH, 0, 3);
+        $noticeData = json_encode(array('type' => $type, 'serverName' => $serverName));
+        $client->send($noticeData);
+        Log::write('send notice data: ' . $noticeData, Log::INFO);
+        $ret = $client->recv();
+        Log::write('recv notice data: ' . $ret, Log::INFO);
+        $ret = json_decode($ret, true);
+        $client->close();
+        return $ret;
     }
     
     private function startServer($serverName, $serverConfig)
@@ -88,12 +101,18 @@ class SwooleMonitor
         }
         exec($cmd, $output, $retNo);
         if ($retNo != 0) {
-            SwooleNotice::showError("failed to start the server! \n");
+            SwooleNotice::showError($serverName . " failed to start the server! \n");
             return false;
         }
-        
+
+        SwooleNotice::showError($serverName . " server started! \n");
+        $retAdd = $this->noticeDaemonServer('add', $serverName);
+        if ($retAdd) {
+            SwooleNotice::showError($serverName . " server notice daemon server ! \n" . json_encode($retAdd));
+        }
         return true;
     }
+    
     private function buildCommand($serverConfig)
     {
         $systemConfig = ' ';
@@ -112,6 +131,7 @@ class SwooleMonitor
     
     private function getMasterPid($processName)
     {
+        //TODO: 拿到错误的pid怎么处理?
         if (file_exists($this->masterPidPath)) {
             $pid = file_get_contents($this->masterPidPath); 
         } else {
@@ -132,8 +152,10 @@ class SwooleMonitor
         }
 
         if (posix_kill($pid, SIGTERM)) {
+            SwooleNotice::showMessage($serverName . ' server stopped !' . PHP_EOL);
             return true;
         } else {
+            SwooleNotice::showMessage($serverName . ' server failed to stop!' . PHP_EOL);
             return false;
         }
     }
@@ -148,8 +170,10 @@ class SwooleMonitor
         
         // swoole reload signal SIGUSR1
         if (posix_kill($pid, SIGUSR1)) {
+            SwooleNotice::showMessage($serverName . ' server reload success!' . PHP_EOL);
             return true;
         } else {
+            SwooleNotice::showMessage($serverName . ' server failed to reload!' . PHP_EOL);
             return false;
         }
          
@@ -159,10 +183,12 @@ class SwooleMonitor
     {
         Log::write("Swoole Monitor status ! \n", Log::INFO);
         $pid = static::getInstance()->getMasterPid($serverName);
-        // get status of the process by send ignore signal
-        if ( posix_kill($pid, SIG_IGN)) {
+        // get status of the process by send default signal
+        if ( posix_kill($pid, SIG_DFL)) {
+            SwooleNotice::showMessage($serverName . ' server is running !' . PHP_EOL);
             return true;
         } else {
+            SwooleNotice::showMessage($serverName . ' server is not running !' . PHP_EOL);
             return false;
         }
         

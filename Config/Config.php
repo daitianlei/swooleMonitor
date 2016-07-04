@@ -10,8 +10,8 @@ class Config
         'login' => array(
             'cli' => '/usr/local/php/bin/php',
             'iniPath' => '/etc/php/php.ini',
-            'cwd' => '/root/swoole/Demos',
-            'startScript' => 'SwooleServerDemo.php',
+            'cwd' => '/root/swoole',
+            'startScript' => 'start.php',
         ),
     );
     

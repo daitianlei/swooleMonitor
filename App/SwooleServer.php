@@ -1,9 +1,12 @@
 <?php namespace App;
 use Config\Config;
+use Lib\Error;
 
 class SwooleServer
 {
     private $server;
+    private static $instance;
+    private static $serverList = array();
     public function __construct()
     {
         $this->server = new \swoole_server(Config::GOD_DAEMON_SOCK_PATH, 0, SWOOLE_BASE, SWOOLE_UNIX_STREAM);
@@ -31,6 +34,35 @@ class SwooleServer
 
     public function onReceive(\swoole_server $server, $fd, $fromId, $data)
     {
+        $recvData = json_decode($data, true);
+        if (!isset($recvData['type'])  || empty($recvData['type']) ||
+            !isset($recvData['serverName']) || empty($recvData['serverName'])) {
+            
+            $server->send($fd, json_encode(['code' => Error::PARAMS_ERR, 'message' => Error::$errMsg[Error::PARAMS_ERR]]));
+            $server->close($fd);
+            return true;
+        }
+        
+        if ($recvData['type'] == 'add') {
+            if (in_array($recvData['serverName'], $server->serverList)) {
+                $server->send($fd, json_encode(['code' => Error::SERVER_EXIST, 'message' => Error::$errMsg[Error::SERVER_EXIST]])); 
+            } else {
+                $server->serverList[] = $recvData['serverName'];
+                $server->send($fd, json_encode(['code' => Error::SUCCESS, 'message' => Error::$errMsg[Error::SUCCESS]]));
+            }
+        } elseif ($recvData['type'] == 'delete') {
+            if (in_array($recvData['serverName'], $server->serverList)) {
+                unset($server->serverList[$recvData['serverName']]);
+                $server->send($fd, json_encode(['code' => Error::SUCCESS, 'message' => Error::$errMsg[Error::SUCCESS]]));
+            } else {
+                $server->send($fd, json_encode(['code' => Error::SERVER_NOT_EXIST, 'message' => Error::$errMsg[Error::SERVER_NOT_EXIST]]));
+            }
+        } else {
+            $server->send($fd, json_encode(['code' => Error::PARAMS_ERR, 'message' => Error::$errMsg[Error::PARAMS_ERR]]));
+        }
+        
+        $server->close($fd);
+        return true;
     }
 
     public function onClose(\swoole_server $server, $fd)

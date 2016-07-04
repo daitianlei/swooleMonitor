@@ -2,6 +2,7 @@
 
 /**
  * Class SwooleLoader
+ * Note: 暂未使用
  * 加载Swoole 对应的监控程序
  * @package App
  * 
