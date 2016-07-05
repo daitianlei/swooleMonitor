@@ -8,11 +8,23 @@
 class Loader
 {
     /**
+     * load local file
      * @param $className
      */
     public static function autoLoad($className)
     {
-        require BASE_PATH . '/' . str_replace('\\', '/', $className) . '.php';
+        $loadingFile = BASE_PATH . '/' . str_replace('\\', '/', $className) . '.php';
+        if (file_exists($loadingFile)) {
+            require $loadingFile;
+        }
+    }
+    
+    public static function autoLoadThirdParty($className)
+    {
+        $loadingFile = BASE_PATH . '/ThirdParty/' . str_replace('\\', '/', $className) . '.php';
+        if (file_exists($loadingFile)) {
+            require $loadingFile;
+        }
     }
 
 }
